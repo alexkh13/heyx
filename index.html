@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>React Coder</title>
+    <title>Vibe Coder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Add CodeMirror CSS and JS -->
     <link
@@ -20,9 +20,21 @@
     <!-- Import modern fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Pacifico&display=swap" rel="stylesheet">
     <style>
       :root {
+        --vibe-gradient: linear-gradient(90deg, #a1c4fd 0%, #c2e9fb 100%);
+        --vibe-glass: rgba(255,255,255,0.7);
+        --vibe-glass-dark: rgba(23,25,35,0.7);
+        --vibe-accent: #fbbf24;
+        --vibe-accent2: #38bdf8;
+        --vibe-accent3: #a3e635;
+        --vibe-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        --vibe-radius: 18px;
+        --vibe-header-height: 72px;
+        --vibe-sidebar-width: 260px;
+        --vibe-fab-size: 56px;
+        --font-logo: 'Pacifico', cursive;
         --bg-primary: #ffffff;
         --bg-secondary: #f8f9fa;
         --bg-selected: #e2e8f0;
@@ -124,11 +136,33 @@
         padding: 0;
         height: 100vh;
         overflow: hidden;
-        background-color: var(--bg-primary);
+        background: var(--vibe-gradient);
         color: var(--text-primary);
         font-family: var(--font-sans);
         font-size: var(--font-size-md);
         line-height: 1.5;
+      }
+
+      body, html {
+        position: relative;
+        min-height: 100vh;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        z-index: 0;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(circle at 80% 20%, #fbbf24 0%, transparent 60%),
+                    radial-gradient(circle at 20% 80%, #38bdf8 0%, transparent 60%);
+        opacity: 0.15;
+        pointer-events: none;
+        animation: vibe-bg-move 12s linear infinite alternate;
+      }
+
+      @keyframes vibe-bg-move {
+        0% { background-position: 80% 20%, 20% 80%; }
+        100% { background-position: 60% 40%, 40% 60%; }
       }
 
       .app-container {
@@ -137,100 +171,143 @@
       }
 
       .header {
-        height: var(--space-12);
-        background-color: var(--bg-header);
-        border-bottom: 1px solid var(--toolbar-border);
+        height: var(--vibe-header-height);
+        background: var(--vibe-glass);
+        backdrop-filter: blur(16px);
+        border-bottom: none;
+        box-shadow: var(--vibe-shadow);
+        border-radius: 0 0 var(--vibe-radius) var(--vibe-radius);
         display: flex;
         align-items: center;
-        padding: 0 var(--space-5);
-        box-shadow: var(--shadow-sm);
+        padding: 0 40px;
         position: relative;
         z-index: 10;
         justify-content: space-between;
+        margin: 16px 16px 0 16px;
       }
 
       .header-logo {
         display: flex;
         align-items: center;
-        font-weight: 600;
-        font-size: var(--font-size-lg);
-        color: var(--text-primary);
+        font-family: var(--font-logo);
+        font-size: 2.2rem;
+        color: var(--vibe-accent2);
+        letter-spacing: 2px;
+        gap: 18px;
+        user-select: none;
       }
 
       .header-logo span {
-        color: var(--border-accent);
+        color: var(--vibe-accent);
+        font-size: 2.4rem;
+        margin-left: 4px;
       }
 
-      .header-actions {
+      .vibe-meter {
         display: flex;
         align-items: center;
-        gap: var(--space-4);
+        gap: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--vibe-accent3);
+        background: rgba(255,255,255,0.5);
+        border-radius: 999px;
+        padding: 6px 18px;
+        box-shadow: 0 2px 8px 0 rgba(163,230,53,0.12);
+        transition: background 0.3s, color 0.3s;
+        min-width: 120px;
+      }
+
+      .vibe-meter-bar {
+        width: 48px;
+        height: 12px;
+        background: linear-gradient(90deg, #fbbf24 0%, #38bdf8 100%);
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .vibe-meter-fill {
+        position: absolute;
+        left: 0; top: 0; bottom: 0;
+        background: #a3e635;
+        border-radius: 8px;
+        transition: width 0.5s cubic-bezier(.4,2,.6,1);
+        height: 100%;
       }
 
       .sidebar {
-        width: 300px;
-        border-right: 1px solid var(--border-color);
-        background: var(--bg-secondary);
-        overflow-y: auto;
+        width: var(--vibe-sidebar-width);
+        background: var(--vibe-glass);
+        backdrop-filter: blur(12px);
+        border-radius: var(--vibe-radius);
+        margin: 24px 0 24px 16px;
+        box-shadow: var(--vibe-shadow);
+        border: none;
+        overflow: visible;
         display: flex;
         flex-direction: column;
+        z-index: 2;
       }
 
       .sidebar-header {
-        padding: var(--space-4) var(--space-5);
-        border-bottom: 1px solid var(--border-color);
-        font-weight: 600;
-        font-size: var(--font-size-lg);
-        color: var(--text-primary);
-        display: flex;
-        align-items: center;
+        font-family: var(--font-logo);
+        font-size: 1.6rem;
+        color: var(--vibe-accent2);
+        padding: 28px 0 12px 32px;
+        border-bottom: none;
+        background: none;
       }
 
       .challenges-list {
-        list-style: none;
-        padding: 0;
+        padding: 0 0 24px 0;
         margin: 0;
+        list-style: none;
       }
 
       .challenge-item {
-        border-bottom: 1px solid var(--border-color);
+        border: none;
+        margin: 0 18px 12px 18px;
+        border-radius: var(--vibe-radius);
+        background: rgba(255,255,255,0.5);
+        box-shadow: 0 2px 8px 0 rgba(56,189,248,0.08);
+        transition: box-shadow 0.2s, background 0.2s;
       }
 
       .challenge-header {
-        padding: var(--space-4) var(--space-5);
+        padding: 18px 24px;
+        border-radius: var(--vibe-radius);
         cursor: pointer;
         display: flex;
-        gap: var(--space-3);
+        gap: 14px;
         align-items: center;
-        transition: background-color 0.2s;
+        background: none;
+        transition: background 0.2s;
       }
 
-      .challenge-header:hover {
-        background: var(--bg-hover);
-      }
-
-      .challenge-header.selected {
-        background: var(--bg-selected);
-        border-left: 3px solid var(--border-accent);
-        padding-left: calc(var(--space-5) - 3px);
+      .challenge-header.selected, .challenge-header:hover {
+        background: linear-gradient(90deg, #c2e9fb 0%, #a1c4fd 100%);
+        box-shadow: 0 4px 16px 0 rgba(56,189,248,0.12);
       }
 
       .challenge-title {
-        font-weight: 500;
-        font-size: var(--font-size-md);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #22223b;
         flex: 1;
-        color: var(--text-primary);
+        letter-spacing: 1px;
       }
 
       .challenge-checkbox {
-        width: 18px;
-        height: 18px;
-        border-radius: var(--radius-sm);
-        margin-right: var(--space-2);
+        accent-color: var(--vibe-accent3);
+        width: 22px;
+        height: 22px;
+        border-radius: 8px;
+        margin-right: 0;
       }
 
       .challenge-expand {
-        color: var(--text-secondary);
+        color: var(--vibe-accent2);
         transition: transform 0.2s;
       }
 
@@ -239,24 +316,24 @@
       }
 
       .challenge-content {
-        padding: 0;
+        padding: 0 24px;
         max-height: 0;
         overflow: hidden;
         transition: all 0.3s ease;
-        background-color: var(--bg-primary);
+        background: none;
       }
 
       .challenge-content.open {
-        padding: var(--space-4) var(--space-5);
+        padding: 12px 24px 18px 24px;
         max-height: 200px;
         overflow-y: auto;
       }
 
       .challenge-description {
-        font-size: var(--font-size-sm);
-        color: var(--text-secondary);
-        margin-bottom: var(--space-3);
-        line-height: 1.5;
+        font-size: 1rem;
+        color: #4a5568;
+        margin-bottom: 0;
+        line-height: 1.6;
       }
 
       .main-content {
@@ -264,311 +341,110 @@
         display: flex;
         position: relative;
         flex-direction: column;
-        margin-right: 50px; /* Updated from 70px to match new sidebar width */
+        margin-right: 60px;
+        margin-left: 0;
+        margin-top: 24px;
+        margin-bottom: 24px;
+        border-radius: var(--vibe-radius);
+        background: rgba(255,255,255,0.6);
+        box-shadow: var(--vibe-shadow);
+        overflow: hidden;
+        z-index: 1;
       }
 
       .editor-container {
         flex: 1;
         overflow: auto;
+        padding: 32px 48px 32px 48px;
+        border-radius: var(--vibe-radius);
+        background: transparent;
       }
 
       .sidebar-right {
-        background: var(--bg-secondary);
-        border-left: 1px solid var(--border-color);
+        background: none;
+        border: none;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        padding: var(--space-2) var(--space-1);
+        align-items: flex-end;
+        padding: 0;
         z-index: 90;
-        position: fixed; /* Fixed positioning to align with drawer */
-        right: 0;
-        top: var(--space-12); /* Top space for header */
-        bottom: 0;
+        position: fixed;
+        right: 32px;
+        top: calc(var(--vibe-header-height) + 32px);
+        bottom: 32px;
+        pointer-events: none;
       }
-      
+
       .fab-container {
         display: flex;
         flex-direction: column;
-        gap: var(--space-2); /* Further reduced gap */
-        align-items: center;
-        height: 100%; /* Take full height of sidebar */
-        padding: var(--space-2); /* Equal padding on all sides */
+        gap: 18px;
+        align-items: flex-end;
+        height: auto;
+        padding: 0;
+        pointer-events: all;
       }
 
       .fab-button {
-        width: 40px; /* Reduced size from 50px to 40px */
-        height: 40px; /* Reduced size from 50px to 40px */
+        width: var(--vibe-fab-size);
+        height: var(--vibe-fab-size);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: var(--ai-assistant-bg);
-        color: var(--ai-assistant-color);
-        border: 1px solid var(--ai-assistant-color);
-        box-shadow: var(--shadow-md);
-        transition: all 0.2s ease;
-        padding: 0;
-      }
-
-      .fab-button:hover {
-        transform: scale(1.05);
-        background-color: var(--ai-assistant-bg-hover);
-        box-shadow: var(--shadow-lg);
-      }
-
-      .fab-button:active {
-        transform: scale(0.95);
-      }
-
-      .fab-button svg {
-        width: 22px; /* Reduced from 28px */
-        height: 22px; /* Reduced from 28px */
-        margin: 0;
-      }
-      
-      .fab-run {
-        background-color: #48bb78;
-        color: white;
-        border-color: #38a169;
-      }
-      
-      .fab-run:hover {
-        background-color: #38a169;
-      }
-      
-      .fab-preview {
-        background-color: #4299e1;
-        color: white;
-        border-color: #3182ce;
-      }
-      
-      .fab-preview:hover {
-        background-color: #3182ce;
-      }
-      
-      .fab-reset {
-        background-color: #e53e3e;
-        color: white;
-        border-color: #c53030;
-      }
-      
-      .fab-reset:hover {
-        background-color: #c53030;
-      }
-      
-      .toast-container {
-        position: fixed;
-        bottom: 24px;
-        left: 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        z-index: 1000;
-      }
-      
-      .toast-notification {
-        padding: 12px 16px;
-        border-radius: var(--radius-md);
+        background: linear-gradient(135deg, #fbbf24 0%, #38bdf8 100%);
         color: #fff;
-        font-size: var(--font-size-sm);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        min-width: 300px;
-        max-width: 400px;
-        box-shadow: var(--shadow-lg);
-        animation: slide-in 0.2s ease-out;
-      }
-      
-      @keyframes slide-in {
-        from {
-          transform: translateX(-100%);
-          opacity: 0;
-        }
-        to {
-          transform: translateX(0);
-          opacity: 1;
-        }
-      }
-      
-      .toast-notification.success {
-        background-color: #48bb78;
-      }
-      
-      .toast-notification.error {
-        background-color: #f56565;
-      }
-      
-      .toast-notification.warning {
-        background-color: #ed8936;
-      }
-      
-      .toast-notification.info {
-        background-color: #4299e1;
-      }
-      
-      .toast-close {
-        background: transparent;
         border: none;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        margin-left: 8px;
+        box-shadow: 0 4px 24px 0 rgba(56,189,248,0.18);
+        transition: all 0.18s;
         padding: 0;
-        width: 24px;
-        height: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: none;
-      }
-      
-      .toast-close:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-      }
-
-      .preview-drawer {
-        position: fixed; /* Changed to fixed positioning */
-        right: 50px; /* Position from the right edge of the viewport - updated from 70px to match new sidebar width */
-        top: var(--space-12); /* Top space for header */
-        bottom: 0;
-        width: 40%;
-        background: var(--drawer-bg);
-        border-left: 1px solid var(--border-color);
-        transform: translateX(calc(100% + 50px)); /* Move off-screen - updated from 70px to match new sidebar width */
-        transition: transform 0.3s ease;
-        display: flex;
-        box-shadow: var(--shadow-md);
-        z-index: 80;
-      }
-      
-      .preview-drawer.open {
-        transform: translateX(0);
-      }
-
-      .CodeMirror {
-        height: 100% !important;
-        font-family: var(--font-mono);
-        font-size: var(--font-size-sm);
-        line-height: 1.6;
-      }
-
-      .CodeMirror-lines {
-        padding: var(--space-4) 0;
-      }
-
-      .CodeMirror pre.CodeMirror-line, 
-      .CodeMirror pre.CodeMirror-line-like {
-        padding: 0 var(--space-4);
-      }
-
-      button {
-        background-color: var(--button-primary);
-        color: var(--button-text);
-        border: none;
-        padding: var(--space-2) var(--space-4);
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        font-family: var(--font-sans);
-        font-weight: 500;
-        font-size: var(--font-size-sm);
-        transition: all 0.2s ease;
-        box-shadow: var(--shadow-sm);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        height: 36px;
-      }
-
-      button.primary {
-        background-color: var(--button-primary);
-        color: var(--button-text);
-      }
-
-      button.primary:hover {
-        background-color: var(--button-primary-hover);
-        box-shadow: var(--shadow-md);
-      }
-
-      button.secondary {
-        background-color: var(--button-secondary);
-        color: var(--button-secondary-text);
-      }
-
-      button.secondary:hover {
-        background-color: var(--button-secondary-hover);
-      }
-
-      button.success {
-        background-color: #48bb78;
-      }
-
-      button.success:hover {
-        background-color: #38a169;
-      }
-
-      button:hover {
-        box-shadow: var(--shadow-md);
-      }
-
-      button:active {
-        transform: translateY(1px);
-      }
-
-      button:disabled {
-        background-color: var(--button-disabled);
-        cursor: not-allowed;
-        opacity: 0.5;
-        box-shadow: none;
-      }
-
-      button svg {
-        margin-right: var(--space-2);
-      }
-
-      .preview-container {
-        flex: 1;
-        display: flex;
+        font-size: 1.5rem;
         position: relative;
       }
 
-      .preview-container iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-        background-color: #fff;
+      .fab-button:hover {
+        transform: scale(1.08) rotate(-2deg);
+        background: linear-gradient(135deg, #38bdf8 0%, #fbbf24 100%);
+        box-shadow: 0 8px 32px 0 rgba(251,191,36,0.18);
       }
 
-      .preview-rerun-button {
-        position: absolute;
-        bottom: var(--space-5);
-        right: var(--space-5);
-        padding: var(--space-2) var(--space-4);
-        background-color: var(--button-primary);
-        color: var(--button-text);
-        border: none;
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        opacity: 0.9;
-        transition: all 0.2s ease;
-        box-shadow: var(--shadow-md);
+      .fab-button:active {
+        transform: scale(0.96);
       }
 
-      .preview-rerun-button:hover {
-        opacity: 1;
-        transform: translateY(-1px);
+      .fab-button svg {
+        width: 32px;
+        height: 32px;
+        margin: 0;
       }
 
-      .preview-rerun-button:active {
-        transform: translateY(0);
+      .fab-run {
+        background: linear-gradient(135deg, #a3e635 0%, #38bdf8 100%);
       }
 
-      .preview-rerun-button:disabled {
-        background-color: var(--button-disabled);
-        cursor: not-allowed;
-        opacity: 0.5;
-        box-shadow: var(--shadow-sm);
+      .fab-preview {
+        background: linear-gradient(135deg, #38bdf8 0%, #fbbf24 100%);
+      }
+
+      .fab-reset {
+        background: linear-gradient(135deg, #f56565 0%, #fbbf24 100%);
+      }
+
+      .fab-new-vibe {
+        background: linear-gradient(135deg, #fbbf24 0%, #a3e635 100%);
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        z-index: 1001;
+        box-shadow: 0 8px 32px 0 rgba(251,191,36,0.22);
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .fab-new-vibe:hover {
+        background: linear-gradient(135deg, #a3e635 0%, #fbbf24 100%);
       }
 
       /* Dialog styles */
@@ -702,7 +578,7 @@
       }
 
       /* SVG Icons */
-      .icon-code {
+      .icon-vibe {
         width: 20px;
         height: 20px;
         margin-right: 8px;
@@ -1183,9 +1059,20 @@ AVAILABLE COMPONENTS:
 
       // SVG Icons
       const Icons = {
-        Code: () => (
-          <svg className="icon-code" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        Vibe: () => (
+          <svg className="icon-vibe" fill="none" viewBox="0 0 64 64" stroke="currentColor">
+            <circle cx="32" cy="32" r="30" strokeWidth="4" stroke="#38bdf8" fill="#fbbf24"/>
+            <ellipse cx="32" cy="40" rx="16" ry="8" fill="#fff" opacity="0.5"/>
+            <path d="M24 28c0-4 4-8 8-8s8 4 8 8" stroke="#22223b" strokeWidth="3" strokeLinecap="round"/>
+            <circle cx="24" cy="32" r="3" fill="#22223b"/>
+            <circle cx="40" cy="32" r="3" fill="#22223b"/>
+            <path d="M28 44c2 2 8 2 10 0" stroke="#22223b" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+        ),
+        NewVibe: () => (
+          <svg width="36" height="36" fill="none" viewBox="0 0 36 36" stroke="currentColor">
+            <circle cx="18" cy="18" r="16" stroke="#a3e635" strokeWidth="3" fill="#fff" />
+            <path d="M18 11v14M11 18h14" stroke="#fbbf24" strokeWidth="3" strokeLinecap="round"/>
           </svg>
         ),
         Run: () => (
@@ -1239,385 +1126,45 @@ AVAILABLE COMPONENTS:
         )
       };
 
-      // Debounce utility
-      function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-          const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-          };
-          clearTimeout(timeout);
-          timeout = setTimeout(later, wait);
-        };
-      }
-
-      // Challenge data
-      const initialChallengesData = [
-        {
-          id: "1",
-          title: "Reverse a String",
-          description: "Write a function that reverses a given string.",
-          starterCode: `function reverseString(str) {
-  // TODO: Implement this
-  return '';
-}`,
-          tests: [
-            { input: "'hello'", expected: "'olleh'" },
-            { input: "'abc'", expected: "'cba'" },
-          ],
-          completed: false,
-        },
-        {
-          id: "2",
-          title: "Sum an Array",
-          description:
-            "Write a function that returns the sum of all numbers in an array.",
-          starterCode: `function sumArray(arr) {
-  // TODO: Implement this
-  return 0;
-}
-`,
-          tests: [
-            { input: `[1,2,3]`, expected: `6` },
-            { input: `[10,-5,5]`, expected: `10` },
-          ],
-          completed: false,
-        },
-        {
-          id: "3",
-          title: "Create a Counter Component",
-          description:
-            "Create a counter component with increment and decrement buttons. The counter should display the current value and not go below 0.",
-          starterCode: `function Counter() {
-  // TODO: Implement state for the counter
-  // TODO: Implement increment and decrement functions
-  
-  return (
-    <div style={{ textAlign: 'center', padding: '20px' }}>
-      <h2>Counter: ?</h2>
-      <button>-</button>
-      <button>+</button>
-    </div>
-  );
-}`,
-          tests: [
-            {
-              type: "component",
-              matcher: "contains",
-              element: "button",
-              count: 2,
-            },
-            {
-              type: "component",
-              matcher: "text",
-              element: "h2",
-              contains: "Counter:",
-            },
-          ],
-          completed: false,
-        },
-      ];
-
-      // Test runner
-      async function runTests(challengeId, userCode, challenges = initialChallengesData) {
-        const challenge = challenges.find(c => c.id === challengeId);
-        
-        if (!challenge) return { success: false, error: 'Challenge not found' };
-        
-        try {
-          const match = challenge.starterCode.match(/function\s+(\w+)/);
-          if (!match) return { success: false, error: 'Cannot identify function name' };
-          
-          const funcName = match[1];
-          const func = new Function(`${userCode}\nreturn ${funcName};`)();
-
-          for (let t of challenge.tests) {
-            const input = eval(t.input);
-            const output = func(input);
-            if (output !== eval(t.expected)) {
-              return {
-                success: false,
-                failedTest: t,
-                output: output,
-                expected: t.expected,
-              };
-            }
+      // Vibe Meter Component
+      function VibeMeter({ status }) {
+        // status: "idle" | "success" | "fail"
+        const [fill, setFill] = React.useState(60);
+        useEffect(() => {
+          if (status === "success") setFill(100);
+          else if (status === "fail") setFill(20);
+          else setFill(60);
+          if (status !== "idle") {
+            const t = setTimeout(() => setFill(60), 1200);
+            return () => clearTimeout(t);
           }
-          return { success: true };
-        } catch (e) {
-          return { success: false, error: e };
-        }
-      }
-
-      // =========== COMPONENTS ===========
-
-      // Generic Dialog Component
-      function Dialog({ isOpen, onClose, children }) {
-        if (!isOpen) return null;
-        
+        }, [status]);
         return (
-          <div className="dialog-overlay" onClick={onClose}>
-            <div className="dialog-content" onClick={e => e.stopPropagation()}>
-              {children}
+          <div className="vibe-meter" title="Vibe Meter">
+            <span>Vibe Meter</span>
+            <div className="vibe-meter-bar">
+              <div className="vibe-meter-fill" style={{
+                width: fill + "%",
+                background: status === "success"
+                  ? "linear-gradient(90deg,#a3e635,#38bdf8)"
+                  : status === "fail"
+                  ? "linear-gradient(90deg,#f56565,#fbbf24)"
+                  : "linear-gradient(90deg,#fbbf24,#38bdf8)"
+              }} />
             </div>
           </div>
         );
       }
 
-      // API Key Dialog Component
-      function APIKeyDialog({ isOpen, onClose }) {
-        const { providers, provider, setApiConfig } = useAI();
-        const [formState, setFormState] = useState({
-          provider,
-          apiKey: '',
-          model: ''
-        });
-        const [error, setError] = useState('');
-
-        // Reset model when provider changes
-        useEffect(() => {
-          setFormState(prev => ({
-            ...prev,
-            model: providers[prev.provider]?.defaultModel || ''
-          }));
-        }, [formState.provider, providers]);
-
-        const handleProviderChange = (provider) => {
-          setFormState(prev => ({ ...prev, provider }));
-        };
-
-        const handleSubmit = (e) => {
-          e.preventDefault();
-          if (!formState.apiKey) {
-            setError('API key is required');
-            return;
-          }
-
-          // Update context
-          setApiConfig(formState);
-          onClose();
-        };
-
-        const renderModelOptions = () => {
-          const providerConfig = providers[formState.provider];
-          if (!providerConfig?.models) return null;
-          
-          return providerConfig.models.map(model => (
-            <option key={model.id} value={model.id}>{model.name}</option>
-          ));
-        };
-
-        return (
-          <Dialog isOpen={isOpen} onClose={onClose}>
-            <div className="dialog-header">
-              <h2 className="dialog-title">Configure AI Assistant</h2>
-              <p className="dialog-description">
-                To enable AI-powered code edits, please provide an API key for one of the supported services.
-                Your key will be stored securely in your browser's local storage.
-              </p>
-            </div>
-
-            <form className="dialog-form" onSubmit={handleSubmit}>
-              <div className="dialog-form-group">
-                <label className="dialog-label">Select AI Provider</label>
-                {Object.keys(providers).map(key => (
-                  <div 
-                    key={key}
-                    className={`provider-option ${formState.provider === key ? 'selected' : ''}`} 
-                    onClick={() => handleProviderChange(key)}
-                  >
-                    <input 
-                      type="radio" 
-                      className="provider-option-input" 
-                      checked={formState.provider === key} 
-                      onChange={() => handleProviderChange(key)}
-                    />
-                    <span className="provider-option-label">{providers[key].name}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="dialog-form-group">
-                <label className="dialog-label">API Key</label>
-                <input
-                  type="password"
-                  className="dialog-input"
-                  value={formState.apiKey}
-                  onChange={e => {
-                    setFormState(prev => ({ ...prev, apiKey: e.target.value }));
-                    setError('');
-                  }}
-                  placeholder={`Enter your ${providers[formState.provider].name} API key`}
-                />
-                {error && <div style={{ color: '#e53e3e', fontSize: 'var(--font-size-sm)', marginTop: '4px' }}>{error}</div>}
-              </div>
-
-              <div className="dialog-form-group">
-                <label className="dialog-label">Model</label>
-                <select 
-                  className="dialog-input" 
-                  value={formState.model} 
-                  onChange={e => setFormState(prev => ({ ...prev, model: e.target.value }))}
-                >
-                  {renderModelOptions()}
-                </select>
-              </div>
-
-              <div className="dialog-footer">
-                <button 
-                  type="button" 
-                  className="secondary" 
-                  onClick={onClose}
-                >
-                  Cancel
-                </button>
-                <button 
-                  type="submit" 
-                  className="primary"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          </Dialog>
-        );
-      }
-
-      // Toast notification component
-      function Toast({ message, type, onClose }) {
-        useEffect(() => {
-          const timer = setTimeout(() => {
-            onClose();
-          }, 5000);
-          
-          return () => clearTimeout(timer);
-        }, [onClose]);
-        
-        return (
-          <div className={`toast-notification ${type}`}>
-            {message}
-            <button className="toast-close" onClick={onClose}>×</button>
-          </div>
-        );
-      }
-      
-      // Toast provider component
-      function ToastProvider({ children }) {
-        const [toasts, setToasts] = useState([]);
-        
-        const addToast = useCallback((message, type = 'info') => {
-          const id = Date.now();
-          setToasts(prev => [...prev, { id, message, type }]);
-          return id;
-        }, []);
-        
-        const removeToast = useCallback((id) => {
-          setToasts(prev => prev.filter(toast => toast.id !== id));
-        }, []);
-        
-        const value = useMemo(() => ({
-          addToast,
-          removeToast
-        }), [addToast, removeToast]);
-        
-        return (
-          <ToastContext.Provider value={value}>
-            {children}
-            <div className="toast-container">
-              {toasts.map(toast => (
-                <Toast 
-                  key={toast.id}
-                  message={toast.message}
-                  type={toast.type}
-                  onClose={() => removeToast(toast.id)}
-                />
-              ))}
-            </div>
-          </ToastContext.Provider>
-        );
-      }
-      
-      const ToastContext = createContext({
-        addToast: () => {},
-        removeToast: () => {}
-      });
-      
-      const useToast = () => useContext(ToastContext);
-      
-      // Process TODO comments in code
-      function ProcessTodoButton() {
-        const { generateCompletions, isConfigured } = useAI();
-        const { currentChallengeId, challengeCodes, updateChallengeCode } = useChallenges();
-        const toast = useToast();
-        const [showApiKeyDialog, setShowApiKeyDialog] = useState(false);
-        
-        const handleClick = () => {
-          const code = challengeCodes[currentChallengeId];
-          
-          // Check if API is configured
-          if (!isConfigured) {
-            toast.addToast('Please configure your AI API key first', 'error');
-            setShowApiKeyDialog(true);
-            return;
-          }
-          
-          // Extract TODO comments from the code
-          const todoRegex = /\/\/\s*TODO:(.+?)($|\n)/g;
-          const todos = [];
-          let match;
-          
-          while ((match = todoRegex.exec(code)) !== null) {
-            todos.push(match[1].trim());
-          }
-          
-          if (todos.length === 0) {
-            toast.addToast('No TODO comments found in your code!', 'warning');
-            return;
-          }
-          
-          // Create a prompt from the TODO comments
-          const prompt = `Please implement the following TODOs in the code:\n${todos.join('\n')}`;
-          
-          // Show toast notification
-          toast.addToast(`Processing ${todos.length} TODOs...`, 'info');
-          
-          // Use the AI to generate completions based on the TODOs
-          generateCompletions(prompt, code, (newCode) => {
-            updateChallengeCode(currentChallengeId, newCode);
-            toast.addToast('TODOs implemented successfully!', 'success');
-          });
-        };
-        
-        return (
-          <>
-            <button 
-              className="fab-button" 
-              onClick={handleClick}
-              title="Process TODO comments in code"
-            >
-              <Icons.AI />
-            </button>
-            
-            <APIKeyDialog 
-              isOpen={showApiKeyDialog} 
-              onClose={() => setShowApiKeyDialog(false)} 
-            />
-          </>
-        );
-      }
-
-      // Header Component
-      function Header() {
+      // Header Component (add VibeMeter)
+      function Header({ vibeStatus }) {
         return (
           <div className="header">
             <div className="header-logo">
-              <Icons.Code />
-              React<span>Coder</span>
+              <Icons.Vibe />
+              Vibe<span>Coder</span>
             </div>
-            <div className="header-actions">
-              {/* Header actions removed and moved to FABs */}
-            </div>
+            <VibeMeter status={vibeStatus} />
           </div>
         );
       }
@@ -1996,6 +1543,462 @@ AVAILABLE COMPONENTS:
           challenges 
         } = useChallenges();
         const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+        const [vibeStatus, setVibeStatus] = useState("idle");
+        const toast = useToast();
+        
+        // Get current code based on selected challenge
+        const currentCode = challengeCodes[currentChallengeId];
+        
+        const handleCodeChange = useCallback(newCode => {
+          updateChallengeCode(currentChallengeId, newCode);
+        }, [currentChallengeId, updateChallengeCode]);
+
+        const handleSubmit = async () => {
+          const result = await runTests(currentChallengeId, currentCode);
+          if (result.success) {
+            markChallengeCompleted(currentChallengeId);
+            setVibeStatus("success");
+            alert("All tests passed! Vibe challenge completed.");
+          } else {
+            setVibeStatus("fail");
+            alert("Some tests failed. Check your code and try again to keep the vibes high.");
+          }
+        };
+
+        return (
+          <div style={{
+            height: "100vh",
+            display: "flex",
+            flexDirection: "column",
+          }}>
+            <Header vibeStatus={vibeStatus} />
+            <div className="app-container">
+              <Sidebar />
+              <div className="main-content">
+                <div className="editor-container">
+                  <CodeEditor code={currentCode} onChange={handleCodeChange} />
+                </div>
+              </div>
+            </div>
+            <div className="sidebar-right">
+              <div className="fab-container">
+                <button 
+                  className="fab-button fab-preview" 
+                  onClick={() => setIsPreviewOpen(!isPreviewOpen)}
+                  title={isPreviewOpen ? "Hide Preview" : "Show Preview"}
+                >
+                  {isPreviewOpen ? <Icons.HidePreview /> : <Icons.Preview />}
+                </button>
+                <button 
+                  className="fab-button fab-run" 
+                  onClick={handleSubmit}
+                  title="Run Tests"
+                >
+                  <Icons.Run />
+                </button>
+                <ProcessTodoButton />
+                <button 
+                  className="fab-button fab-reset" 
+                  onClick={() => {
+                    const challenge = challenges.find(c => c.id === currentChallengeId);
+                    if (challenge && window.confirm("Reset code to default state? This cannot be undone.")) {
+                      updateChallengeCode(currentChallengeId, challenge.starterCode);
+                      toast.addToast("Code reset to default state", "success");
+                    }
+                  }}
+                  title="Reset to Default"
+                >
+                  <Icons.Reset />
+                </button>
+              </div>
+            </div>
+            <div className={`preview-drawer ${isPreviewOpen ? "open" : ""}`}>
+              <Preview />
+            </div>
+            {/* Floating New Vibe Button (future extensibility) */}
+            <button className="fab-button fab-new-vibe" title="New Vibe (coming soon)">
+              <Icons.NewVibe />
+            </button>
+          </div>
+        );
+      }
+
+      // Root App Component wrapping all providers
+      function App() {
+        return (
+          <ThemeProvider>
+            <ChallengeProvider initialChallenges={initialChallengesData}>
+              <AIProvider>
+                <ToastProvider>
+                  <IDEPage />
+                </ToastProvider>
+              </AIProvider>
+            </ChallengeProvider>
+          </ThemeProvider>
+        );
+      }
+
+      // Render the application
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleExpand(challenge.id);
+                }}
+              >
+                <Icons.ChevronRight />
+              </div>
+            </div>
+            <div className={`challenge-content ${isExpanded ? 'open' : ''}`}>
+              <div className="challenge-description">{challenge.description}</div>
+            </div>
+          </div>
+        );
+      }
+
+      // Sidebar Component
+      function Sidebar() {
+        const { challenges, currentChallengeId, selectChallenge } = useChallenges();
+        const [expandedId, setExpandedId] = useState(currentChallengeId);
+        
+        // Automatically expand the selected challenge
+        useEffect(() => {
+          setExpandedId(currentChallengeId);
+        }, [currentChallengeId]);
+        
+        const handleToggleExpand = (id) => {
+          setExpandedId(expandedId === id ? null : id);
+        };
+        
+        return (
+          <div className="sidebar">
+            <div className="sidebar-header">
+              <span>Challenges</span>
+            </div>
+            <div className="challenges-list">
+              {challenges.map((challenge) => (
+                <ChallengeItem
+                  key={challenge.id}
+                  challenge={challenge}
+                  isSelected={challenge.id === currentChallengeId}
+                  onSelect={selectChallenge}
+                  isExpanded={expandedId === challenge.id}
+                  onToggleExpand={handleToggleExpand}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      // Preview Component
+      function Preview() {
+        const { currentChallengeId, challengeCodes } = useChallenges();
+        const code = challengeCodes[currentChallengeId] || '';
+        const iframeRef = useRef(null);
+        const [hasChanges, setHasChanges] = useState(false);
+        const [lastRenderedCode, setLastRenderedCode] = useState(code);
+        const isDrawerOpen = useRef(false); // Ref to track drawer state
+
+        // Get drawer open state from parent component
+        useEffect(() => {
+          const drawer = document.querySelector('.preview-drawer');
+          if (drawer) {
+            const observer = new MutationObserver((mutations) => {
+              mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'class') {
+                  isDrawerOpen.current = drawer.classList.contains('open');
+                  // If drawer just opened and there are changes, render preview
+                  if (isDrawerOpen.current && hasChanges) {
+                    renderPreview();
+                  }
+                }
+              });
+            });
+            
+            observer.observe(drawer, { attributes: true });
+            isDrawerOpen.current = drawer.classList.contains('open');
+            
+            return () => observer.disconnect();
+          }
+        }, [hasChanges]);
+
+        // Reset lastRenderedCode when challenge changes
+        useEffect(() => {
+          setLastRenderedCode(""); // Reset on challenge change
+          setHasChanges(true);
+          
+          // Only render immediately if drawer is open
+          if (isDrawerOpen.current) {
+            renderPreview();
+          }
+        }, [currentChallengeId]);
+
+        useEffect(() => {
+          if (code !== lastRenderedCode) {
+            setHasChanges(true);
+            
+            // Only auto-update if drawer is open
+            if (isDrawerOpen.current) {
+              renderPreview();
+            }
+          }
+        }, [code, lastRenderedCode]);
+
+        const renderPreview = useCallback(() => {
+          const iframe = iframeRef.current;
+          if (!iframe) return;
+
+          // Determine if the code contains React/JSX syntax
+          const isReactComponent =
+            code.includes("function") &&
+            code.includes("return") &&
+            code.includes("<");
+
+          // make sure to avoid writing <script> directly here
+          // use string literal instead, e.g. ${script}
+          const script = "script";
+
+          const html = `
+            <!DOCTYPE html>
+            <html>
+              <head>
+                <${script} type="importmap">
+                  {
+                    "imports": {
+                      "react": "https://ga.jspm.io/npm:react@18.3.1/index.js",
+                      "react-dom": "https://ga.jspm.io/npm:react-dom@18.3.1/index.js"
+                    },
+                    "scopes": {
+                      "https://ga.jspm.io/": {
+                        "scheduler": "https://ga.jspm.io/npm:scheduler@0.23.2/index.js"
+                      }
+                    }
+                  }
+                </${script}>
+                <${script} async src="https://ga.jspm.io/npm:es-module-shims@1.10.0/dist/es-module-shims.js"></${script}>
+                <${script} src="https://unpkg.com/@babel/standalone/babel.min.js"></${script}>
+                <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+                <style>
+                  :root {
+                    --blue-500: #3182ce;
+                    --blue-600: #2b6cb0;
+                    --gray-100: #f7fafc;
+                    --gray-200: #edf2f7;
+                    --gray-700: #4a5568;
+                    --gray-900: #1a202c;
+                    --red-500: #f56565;
+                    --green-500: #48bb78;
+                  }
+                  
+                  * {
+                    box-sizing: border-box;
+                  }
+                  
+                  body {
+                    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+                    padding: 24px;
+                    line-height: 1.5;
+                    color: var(--gray-900);
+                    font-size: 16px;
+                    margin: 0;
+                  }
+                  
+                  .dark-mode {
+                    background-color: var(--gray-900);
+                    color: var(--gray-100);
+                  }
+
+                  h1, h2, h3, h4, h5 {
+                    margin-top: 0;
+                    line-height: 1.2;
+                  }
+                  
+                  button {
+                    margin: 0 6px;
+                    padding: 6px 12px;
+                    background: var(--blue-500);
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-family: inherit;
+                    font-size: 14px;
+                    font-weight: 500;
+                  }
+                  
+                  button:hover {
+                    background: var(--blue-600);
+                  }
+                  
+                  pre {
+                    background: var(--gray-100);
+                    padding: 16px;
+                    border-radius: 8px;
+                    overflow: auto;
+                    font-size: 14px;
+                    border: 1px solid var(--gray-200);
+                  }
+                  
+                  .error {
+                    color: var(--red-500);
+                    padding: 12px;
+                    border-radius: 6px;
+                    background-color: rgba(245, 101, 101, 0.1);
+                    margin: 16px 0;
+                  }
+                  
+                  .success {
+                    color: var(--green-500);
+                    padding: 12px;
+                    border-radius: 6px;
+                    background-color: rgba(72, 187, 120, 0.1);
+                    margin: 16px 0;
+                  }
+                  
+                  @media (prefers-color-scheme: dark) {
+                    body {
+                      background-color: var(--gray-900);
+                      color: var(--gray-100);
+                    }
+                    pre {
+                      background: rgba(255, 255, 255, 0.1);
+                      border-color: rgba(255, 255, 255, 0.2);
+                    }
+                  }
+                </style>
+              </head>
+              <body>
+                <div id="root"></div>
+                <${script} type="text/babel" data-presets="react" data-type="module">
+                  import React from 'react';
+                  import ReactDOM from 'react-dom';
+
+                  ${code}
+                  ${
+                    isReactComponent
+                      ? `
+                    // Extract the component name from the code
+                    const match = ${JSON.stringify(
+                      code
+                    )}.match(/function\\s+(\\w+)/);
+                    if (match) {
+                      const ComponentName = eval(match[1]);
+                      ReactDOM.render(React.createElement(ComponentName), document.getElementById('root'));
+                    }
+                  `
+                      : `
+                    // For non-React challenges, show the function result
+                    const match = ${JSON.stringify(
+                      code
+                    )}.match(/function\\s+(\\w+)/);
+                    if (match) {
+                      const funcName = match[1];
+                      const func = eval('(' + ${JSON.stringify(code)} + ')');
+                      document.getElementById('root').innerHTML = '<h3>Function: ' + funcName + '</h3>' +
+                        '<p>Try calling this function in the browser console!</p>' +
+                        '<div class="success">✓ Function defined successfully</div>';
+                      window[funcName] = func;
+                      console.log("✓ Function " + funcName + " is available in the console.");
+                    }
+                  `
+                  }
+                </${script}>
+              </body>
+            </html>`;
+
+          iframe.srcdoc = html;
+          setLastRenderedCode(code);
+          setHasChanges(false);
+        }, [code]);
+
+        return (
+          <div className="preview-container">
+            <iframe ref={iframeRef} title="Preview" sandbox="allow-scripts" />
+            <button 
+              className="preview-rerun-button" 
+              onClick={renderPreview}
+              disabled={!hasChanges}
+            >
+              {hasChanges ? "Re-run" : "Up to date"}
+            </button>
+          </div>
+        );
+      }
+
+      // CodeEditor Component
+      function CodeEditor({ code, onChange }) {
+        const editorRef = useRef(null);
+        const cmRef = useRef(null);
+        const isInternalChange = useRef(false);
+        const callbackRef = useRef({ onChange });
+        const { isDarkMode } = useTheme();
+
+        // Keep the callback ref updated
+        useEffect(() => {
+          callbackRef.current = { onChange };
+        }, [onChange]);
+
+        // Initialize CodeMirror
+        useEffect(() => {
+          if (!editorRef.current) return;
+          
+          cmRef.current = CodeMirror(editorRef.current, {
+            value: code,
+            mode: "jsx",
+            lineNumbers: true,
+            theme: isDarkMode ? "dracula" : "default",
+            autoCloseBrackets: true,
+            matchBrackets: true,
+            tabSize: 2,
+            indentWithTabs: false,
+            lineWrapping: true
+          });
+          
+          cmRef.current.on("change", (instance) => {
+            if (!isInternalChange.current) {
+              callbackRef.current.onChange(instance.getValue());
+            }
+          });
+
+          return () => {
+            if (cmRef.current) {
+              cmRef.current.toTextArea();
+            }
+          };
+        }, []);
+
+        // Update code when prop changes
+        useEffect(() => {
+          if (cmRef.current && cmRef.current.getValue() !== code) {
+            isInternalChange.current = true;
+            cmRef.current.setValue(code);
+            isInternalChange.current = false;
+          }
+        }, [code]);
+        
+        // Update theme when darkMode changes
+        useEffect(() => {
+          if (cmRef.current) {
+            cmRef.current.setOption('theme', isDarkMode ? 'dracula' : 'default');
+          }
+        }, [isDarkMode]);
+
+        return <div style={{ flex: 1 }} ref={editorRef}></div>;
+      }
+
+      // Main IDE Component
+      function IDEPage() {
+        const { 
+          currentChallengeId, 
+          challengeCodes, 
+          updateChallengeCode, 
+          markChallengeCompleted,
+          challenges 
+        } = useChallenges();
+        const [isPreviewOpen, setIsPreviewOpen] = useState(false);
         const { isConfigured } = useAI();
         const toast = useToast();
         
@@ -2011,9 +2014,9 @@ AVAILABLE COMPONENTS:
           
           if (result.success) {
             markChallengeCompleted(currentChallengeId);
-            alert("All tests passed! Challenge completed.");
+            alert("All tests passed! Vibe challenge completed.");
           } else {
-            alert("Some tests failed. Check your code and try again.");
+            alert("Some tests failed. Check your code and try again to keep the vibes high.");
           }
         };
 
@@ -2100,4 +2103,4 @@ AVAILABLE COMPONENTS:
       ReactDOM.render(<App />, document.getElementById("root"));
     </script>
   </body>
-  </html>
+</html>
