@@ -1128,9 +1128,8 @@ AVAILABLE COMPONENTS:
 
       // Vibe Meter Component
       function VibeMeter({ status }) {
-        // status: "idle" | "success" | "fail"
         const [fill, setFill] = React.useState(60);
-        useEffect(() => {
+        React.useEffect(() => {
           if (status === "success") setFill(100);
           else if (status === "fail") setFill(20);
           else setFill(60);
@@ -1544,11 +1543,10 @@ AVAILABLE COMPONENTS:
         } = useChallenges();
         const [isPreviewOpen, setIsPreviewOpen] = useState(false);
         const [vibeStatus, setVibeStatus] = useState("idle");
+        const { isConfigured } = useAI();
         const toast = useToast();
-        
-        // Get current code based on selected challenge
         const currentCode = challengeCodes[currentChallengeId];
-        
+
         const handleCodeChange = useCallback(newCode => {
           updateChallengeCode(currentChallengeId, newCode);
         }, [currentChallengeId, updateChallengeCode]);
@@ -1615,7 +1613,6 @@ AVAILABLE COMPONENTS:
             <div className={`preview-drawer ${isPreviewOpen ? "open" : ""}`}>
               <Preview />
             </div>
-            {/* Floating New Vibe Button (future extensibility) */}
             <button className="fab-button fab-new-vibe" title="New Vibe (coming soon)">
               <Icons.NewVibe />
             </button>
@@ -1640,6 +1637,9 @@ AVAILABLE COMPONENTS:
 
       // Render the application
       ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
     </script>
   </body>
 </html>
